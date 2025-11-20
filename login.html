@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Quiz App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- 🌙 NAVIGATION BAR -->
+  <nav class="navbar">
+    <div class="nav-left">
+      <h2 class="logo">Quiz App</h2>
+    </div>
+    <div class="nav-right">
+      <a href="login.html" class="active">Login</a>
+      <a href="register.html">Register</a>
+      <a href="admin.html">Admin Dashboard</a>
+      <button class="toggle-mode" onclick="toggleMode()">🌙 Dark Mode</button>
+    </div>
+  </nav>
+
+  <!-- 🔐 LOGIN CARD -->
+  <div class="app auth-card">
+    <h1>Welcome Back</h1>
+    <p class="subtitle">Login to start your quiz journey</p>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Enter username" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter password" required />
+      </div>
+
+      <button type="button" onclick="login()">Login</button>
+      <p class="switch-text">
+        Don’t have an account? <a href="register.html">Register here</a>
+      </p>
+    </form>
+  </div>
+
+  <!-- 🌗 Dark Mode Script -->
+  <script>
+    function toggleMode() {
+      const body = document.body;
+      body.classList.toggle("dark");
+      const btn = document.querySelector(".toggle-mode");
+      btn.textContent = body.classList.contains("dark")
+        ? "☀️ Light Mode"
+        : "🌙 Dark Mode";
+    }
+
+    async function login() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      const res = await fetch("/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        if (data.role === "admin") {
+          window.location.href = "admin.html";
+        } else {
+          window.location.href = "index.html";
+        }
+      } else {
+        alert(data.message);
+      }
+    }
+  </script>
+
+</body>
+</html>
+

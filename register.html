@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register - Quiz App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- 🌙 NAVIGATION BAR -->
+  <nav class="navbar">
+    <div class="nav-left">
+      <h2 class="logo">Quiz App</h2>
+    </div>
+    <div class="nav-right">
+      <a href="login.html">Login</a>
+      <a href="register.html" class="active">Register</a>
+      <a href="admin.html">Admin Dashboard</a>
+      <button class="toggle-mode" onclick="toggleMode()">🌙 Dark Mode</button>
+    </div>
+  </nav>
+
+  <!-- 🧾 REGISTER CARD -->
+  <div class="app auth-card">
+    <h1>Create Account</h1>
+    <p class="subtitle">Join the quiz community today</p>
+
+    <form id="register-form">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Choose username" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Create password" required />
+      </div>
+
+      <button type="button" onclick="register()">Register</button>
+      <p class="switch-text">
+        Already have an account? <a href="login.html">Login here</a>
+      </p>
+    </form>
+  </div>
+
+  <!-- 🌗 Dark Mode Script -->
+  <script>
+    function toggleMode() {
+      const body = document.body;
+      body.classList.toggle("dark");
+      const btn = document.querySelector(".toggle-mode");
+      btn.textContent = body.classList.contains("dark")
+        ? "☀️ Light Mode"
+        : "🌙 Dark Mode";
+    }
+
+    async function register() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      const res = await fetch("/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert("Registration successful! Redirecting to login...");
+        window.location.href = "login.html";
+      } else {
+        alert(data.message);
+      }
+    }
+  </script>
+
+</body>
+</html>
+
+

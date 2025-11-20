@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- 🌙 NAVIGATION BAR -->
+  <nav class="navbar">
+    <div class="nav-left">
+      <h2 class="logo">Quiz App</h2>
+    </div>
+    <div class="nav-right">
+      <a href="login.html">Login</a>
+      <a href="register.html">Register</a>
+      <a href="admin-login.html">Admin Dashboard</a>
+      <button class="toggle-mode" onclick="toggleMode()">🌙 Dark Mode</button>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- 🧠 QUIZ APP -->
+  <div class="app quiz">
+    <h1>Simple Quiz</h1>
+
+    <div class="quiz">
+      <h2 id="question">Question goes here</h2>
+      <div id="answer-buttons">
+        <!-- Buttons dynamically added by JS -->
+      </div>
+      <button id="next-btn">Next</button>
+    </div>
+  </div>
+
+  <!-- 🧩 Scripts -->
+  <script src="script.js"></script>
+
+  <!-- 🌗 Dark Mode & Logout Script -->
+  <script>
+    function toggleMode() {
+      const body = document.body;
+      body.classList.toggle("dark");
+      const modeBtn = document.querySelector(".toggle-mode");
+      modeBtn.textContent = body.classList.contains("dark")
+        ? "☀️ Light Mode"
+        : "🌙 Dark Mode";
+    }
+
+    async function logout() {
+      await fetch("/logout", { method: "POST" });
+      alert("You have been logged out.");
+      window.location.href = "login.html";
+    }
+
+    // ✅ Redirect to login if not authenticated
+    async function checkLogin() {
+      const res = await fetch("/check-login");
+      const data = await res.json();
+      if (!data.loggedIn) {
+        alert("Please login first!");
+        window.location.href = "login.html";
+      }
+    }
+
+    checkLogin();
+  </script>
+
+</body>
+</html>
+

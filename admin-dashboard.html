@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Quiz App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- 🌙 NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-left">
+      <h2 class="logo">Admin Panel</h2>
+    </div>
+    <div class="nav-right">
+      <a href="admin-dashboard.html" class="active">Dashboard</a>
+      <button class="toggle-mode" onclick="toggleMode()">🌙 Dark Mode</button>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- 🧠 ADMIN DASHBOARD CARD -->
+  <div class="app auth-card">
+    <h1>Admin Dashboard</h1>
+    <p class="subtitle">Add new quiz questions</p>
+
+    <form id="add-question-form">
+      <div class="form-group">
+        <label for="question">Question</label>
+        <input type="text" id="question" placeholder="Enter question" required />
+      </div>
+
+      <div class="form-group">
+        <label>Options</label>
+        <input type="text" id="a" placeholder="Option A" required />
+        <input type="text" id="b" placeholder="Option B" required />
+        <input type="text" id="c" placeholder="Option C" required />
+        <input type="text" id="d" placeholder="Option D" required />
+      </div>
+
+      <div class="form-group">
+        <label for="correct">Correct Option (A/B/C/D)</label>
+        <input type="text" id="correct" placeholder="Enter correct option" maxlength="1" required />
+      </div>
+
+      <button type="button" onclick="addQuestion()">Add Question</button>
+    </form>
+  </div>
+
+  <!-- 🌗 ADMIN JS -->
+  <script>
+    function toggleMode() {
+      document.body.classList.toggle("dark");
+      const btn = document.querySelector(".toggle-mode");
+      btn.textContent = document.body.classList.contains("dark")
+        ? "☀️ Light Mode"
+        : "🌙 Dark Mode";
+    }
+
+    async function logout() {
+      await fetch("/logout", { method: "POST" });
+      alert("Logged out successfully!");
+      window.location.href = "admin-login.html";
+    }
+
+    async function addQuestion() {
+      const question = document.getElementById("question").value;
+      const answers = [
+        { text: document.getElementById("a").value, correct: document.getElementById("correct").value.toUpperCase() === "A" },
+        { text: document.getElementById("b").value, correct: document.getElementById("correct").value.toUpperCase() === "B" },
+        { text: document.getElementById("c").value, correct: document.getElementById("correct").value.toUpperCase() === "C" },
+        { text: document.getElementById("d").value, correct: document.getElementById("correct").value.toUpperCase() === "D" },
+      ];
+
+      const res = await fetch("/questions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question, answers }),
+      });
+
+      const data = await res.json();
+      alert(data.message);
+
+      document.getElementById("add-question-form").reset();
+    }
+  </script>
+
+</body>
+</html>
+
